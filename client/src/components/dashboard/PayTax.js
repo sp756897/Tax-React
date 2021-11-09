@@ -29,44 +29,48 @@ class PayTax extends Component {
 
     render() {
         const { res } = this.state;
-        return (
-            <div class="row">
-                <Dashnav />
-                <div class="col s12 m8 l9" style={{ marginTop: "1rem" }}>
-                    <div className="col s12 center-align">
-                        <div>
-                            <h4>
-                                Transportation Tax
-                            </h4>
-                            <div class="card-panel #eceff1 blue-grey lighten-5 z-depth-1" style={{ borderWidth: "1px", borderColor: "black", borderBlockStyle: "double" }}>
-                                <div class="row valign-wrapper">
-                                    <div class="col s2">
-                                        <i className="material-icons">directions_car</i>
-                                    </div>
-                                    <div class="col s10">
-                                        <span class="black-text">
-                                            Salary : {res.salary} Tax : {res.tax}
-                                        </span>
-                                    </div>
-                                    <button
-                                        style={{
-                                            width: "150px",
-                                            borderRadius: "3px",
-                                            letterSpacing: "1.5px",
-                                            marginTop: "1rem"
-                                        }}
-                                        onClick={this.onSubmit}
-                                        className="btn btn-small waves-effect waves-light hoverable blue accent-3"
-                                    >
-                                        Pay
-                                    </button>
+
+        const taxes = ["Transportation", "Consumer"]
+        const taxList = taxes.map((val, key) => (
+            <div key={key} class="col s12 m8 l9" style={{ marginTop: "1rem" }}>
+                <div className="col s12 center-align">
+                    <div>
+                        <h4>
+                            {val}
+                        </h4>
+                        <div class="card-panel #eceff1 blue-grey lighten-5 z-depth-1" style={{ borderWidth: "1px", borderColor: "black", borderBlockStyle: "double" }}>
+                            <div class="row valign-wrapper">
+                                <div class="col s2">
+                                    <i className="material-icons">directions_car</i>
                                 </div>
+                                <div class="col s10">
+                                    <span class="black-text">
+                                        Salary : {res.salary} Tax : {res.tax}
+                                    </span>
+                                </div>
+                                <button
+                                    style={{
+                                        width: "150px",
+                                        borderRadius: "3px",
+                                        letterSpacing: "1.5px",
+                                        marginTop: "1rem"
+                                    }}
+                                    onClick={this.onSubmit}
+                                    className="btn btn-small waves-effect waves-light hoverable blue accent-3"
+                                >
+                                    {res.tax > 0 ? "Paid" : "Pay"}
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        ));
 
-
+        return (
+            <div class="row">
+                <Dashnav />
+                {taxList}
             </div>
         )
     }

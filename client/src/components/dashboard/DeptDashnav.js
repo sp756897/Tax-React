@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-class Dashnav extends Component {
+class DeptDashnav extends Component {
 
     constructor(props) {
         super(props);
@@ -16,7 +16,7 @@ class Dashnav extends Component {
         return (
             <div class="col s12 m4 l3">
                 <Link
-                    to="/dashboard"
+                    to="/deptdashboard"
                     style={{
                         width: "140px",
                         borderRadius: "3px",
@@ -26,10 +26,10 @@ class Dashnav extends Component {
                     }}
                     className="btn btn-large waves-effect waves-light hoverable #2196f3 blue"
                 >
-                    Dashboard
+                    DeptDashboard
                 </Link>
                 <Link
-                    to="/paytax"
+                    to="/createproject"
                     style={{
                         width: "140px",
                         borderRadius: "3px",
@@ -39,10 +39,10 @@ class Dashnav extends Component {
                     }}
                     className="btn btn-large waves-effect waves-light hoverable #2196f3 blue"
                 >
-                    Pay Tax
+                    Create Project
                 </Link>
                 <Link
-                    to="/vote"
+                    to="/projects"
                     style={{
                         width: "140px",
                         borderRadius: "3px",
@@ -52,7 +52,20 @@ class Dashnav extends Component {
                     }}
                     className="btn btn-large waves-effect waves-light hoverable #2196f3 blue"
                 >
-                    Vote
+                    Projects
+                </Link>
+                <Link
+                    to="/requestslist"
+                    style={{
+                        width: "140px",
+                        borderRadius: "3px",
+                        letterSpacing: "1.5px",
+                        width: "100%",
+                        margin: "6px 6px"
+                    }}
+                    className="btn btn-large waves-effect waves-light hoverable #2196f3 blue"
+                >
+                    Requests
                 </Link>
                 <button
                     style={{
@@ -72,4 +85,4 @@ class Dashnav extends Component {
     }
 }
 
-export default Dashnav;
+export default DeptDashnav;

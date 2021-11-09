@@ -42,6 +42,32 @@ class Landing extends Component {
                                 Log In
                             </Link>
                         </div>
+                        <div className="col s6">
+                            <Link
+                                to="/deptlogin"
+                                style={{
+                                    width: "140px",
+                                    borderRadius: "3px",
+                                    letterSpacing: "1.5px"
+                                }}
+                                className="btn btn-large btn-flat waves-effect white black-text"
+                            >
+                                Dept Log In
+                            </Link>
+                        </div>
+                        <div className="col s6">
+                            <Link
+                                to="/deptregister"
+                                style={{
+                                    width: "140px",
+                                    borderRadius: "3px",
+                                    letterSpacing: "1.5px"
+                                }}
+                                className="btn btn-large btn-flat waves-effect white black-text"
+                            >
+                                Dept Register
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

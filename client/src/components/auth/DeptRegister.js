@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-class Register extends Component {
+class DeptRegister extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: "",
             salary: "",
+            password: "",
+            password2: "",
             errors: {},
             accounts: this.props.accounts,
             contract: this.props.contract,
@@ -20,16 +24,49 @@ class Register extends Component {
     onSubmit = async (e) => {
         e.preventDefault();
 
-        const { accounts, contract, name, salary } = this.state;
+        const { accounts, contract } = this.state;
+
+        if (this.state.name === null) {
+            toast.error('Please fill', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
 
         try {
-            await contract.methods.addPayer(name, salary).send({ from: accounts[0] });
-            this.props.history.push("/login");
+            var resop = await contract.methods.addDept(this.state.name).send({ from: accounts[0] });
+            console.log(resop)
+            toast.success('🦄 Project Created 👍', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+
+
+            this.props.history.push("/deptlogin");
         }
         catch (err) {
+            toast.error('🦄 Try Agian!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             console.log(err)
         }
-
     };
     render() {
         const { errors } = this.state;
@@ -58,19 +95,8 @@ class Register extends Component {
                                     id="name"
                                     type="text"
                                 />
-                                <label htmlFor="name">Name</label>
+                                <label htmlFor="name"> Dept Name</label>
                             </div>
-                            <div className="input-field col s12">
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.salary}
-                                    error={errors.salary}
-                                    id="salary"
-                                    type="number"
-                                />
-                                <label htmlFor="salary">Salary</label>
-                            </div>
-
                             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                                 <button
                                     style={{
@@ -92,4 +118,4 @@ class Register extends Component {
         );
     }
 }
-export default withRouter(Register);
+export default withRouter(DeptRegister);

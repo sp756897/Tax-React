@@ -15,13 +15,8 @@ class Login extends Component {
     }
 
     componentDidMount() {
-        if (this.props.auth) {
+        if (this.state.auth) {
         }
-    }
-
-    componentDidUpdate(nextProps) {
-        console.log(nextProps)
-        console.log(this.props.auth)
     }
 
     onChange = e => {
@@ -38,6 +33,7 @@ class Login extends Component {
         if (res.id != 0) {
             console.log("Signed On")
             this.props.func(res)
+            localStorage.setItem("userData", JSON.stringify(res));
             this.props.history.push("/dashboard", res);
         }
         else {

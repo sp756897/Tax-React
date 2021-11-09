@@ -1,41 +1,55 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 
-class Register extends Component {
+class DeptLogin extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
-            salary: "",
+            email: "",
+            password: "",
             errors: {},
             accounts: this.props.accounts,
             contract: this.props.contract,
+            deptauth: this.props.deptauth,
         };
+    }
+
+    componentDidMount() {
+
     }
 
     onChange = e => {
         this.setState({ [e.target.id]: e.target.value });
     };
-
     onSubmit = async (e) => {
         e.preventDefault();
+        const { accounts, contract } = this.state;
 
-        const { accounts, contract, name, salary } = this.state;
+        const res = await contract.methods.getHead(accounts[0]).call();
 
-        try {
-            await contract.methods.addPayer(name, salary).send({ from: accounts[0] });
-            this.props.history.push("/login");
+        console.log(res[0])
+
+        const depthead = {
+            id: res[0],
+            deptname: res[1]
         }
-        catch (err) {
-            console.log(err)
-        }
 
+        if (res[0] != 0) {
+            console.log("Signed On Department")
+            console.log("res:", JSON.stringify(depthead))
+            this.props.deptfunc(depthead)
+            localStorage.setItem("deptData", JSON.stringify(depthead));
+            this.props.history.push("/deptdashboard");
+        }
+        else {
+            console.log("Please Sign Up")
+        }
     };
     render() {
         const { errors } = this.state;
         return (
             <div className="container">
-                <div className="row">
+                <div style={{ marginTop: "4rem" }} className="row">
                     <div className="col s8 offset-s2">
                         <Link to="/" className="btn-flat waves-effect">
                             <i className="material-icons left">keyboard_backspace</i> Back to
@@ -43,34 +57,33 @@ class Register extends Component {
                         </Link>
                         <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                             <h4>
-                                <b>Register</b> below
+                                <b>Login</b> below
                             </h4>
                             <p className="grey-text text-darken-1">
-                                Already have an account? <Link to="/login">Log in</Link>
+                                Don't have an account? Go Home Senor
                             </p>
                         </div>
                         <form noValidate onSubmit={this.onSubmit}>
                             <div className="input-field col s12">
                                 <input
                                     onChange={this.onChange}
-                                    value={this.state.name}
-                                    error={errors.name}
-                                    id="name"
-                                    type="text"
+                                    value={this.state.email}
+                                    error={errors.email}
+                                    id="email"
+                                    type="email"
                                 />
-                                <label htmlFor="name">Name</label>
+                                <label htmlFor="email">Email</label>
                             </div>
                             <div className="input-field col s12">
                                 <input
                                     onChange={this.onChange}
-                                    value={this.state.salary}
-                                    error={errors.salary}
-                                    id="salary"
-                                    type="number"
+                                    value={this.state.password}
+                                    error={errors.password}
+                                    id="password"
+                                    type="password"
                                 />
-                                <label htmlFor="salary">Salary</label>
+                                <label htmlFor="password">Password</label>
                             </div>
-
                             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                                 <button
                                     style={{
@@ -82,7 +95,7 @@ class Register extends Component {
                                     type="submit"
                                     className="btn btn-large waves-effect waves-light hoverable blue accent-3"
                                 >
-                                    Sign up
+                                    Login
                                 </button>
                             </div>
                         </form>
@@ -92,4 +105,4 @@ class Register extends Component {
         );
     }
 }
-export default withRouter(Register);
+export default withRouter(DeptLogin);

@@ -1,37 +1,41 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
-import Dashnav from "./DashNav";
+import DeptDashnav from "./DeptDashnav";
 
-class Dashboard extends Component {
+class DeptDashboard extends Component {
 
     constructor(props) {
         super(props)
-        console.log(JSON.parse(localStorage.getItem("userData")))
+        console.log(JSON.parse(localStorage.getItem("deptData")))
         this.state = {
             accounts: this.props.accounts,
             contract: this.props.contract,
-            response: JSON.parse(localStorage.getItem("userData"))
+            response: JSON.parse(localStorage.getItem("deptData"))
         }
+    }
+
+    componentDidMount() {
+        console.log(JSON.parse(localStorage.getItem("deptData")))
     }
 
     onLogoutClick = e => {
         e.preventDefault();
-        localStorage.removeItem("userData")
-        this.props.func()
+        localStorage.removeItem("deptdata")
+        this.props.deptfunc()
     };
 
     render() {
         const { response } = this.state;
         return (
             <div class="row">
-                <Dashnav />
+                <DeptDashnav />
                 <div class="col s12 m8 l9" style={{ marginTop: "9rem" }}>
                     <div className="col s12 center-align">
                         <h4>
-                            <b>Hey there,</b> {response[1]} What's Up?<br></br>
+                            <b>Hey there,</b> {response.deptname} What's Up?<br></br>
                             <h1 className="flow-text grey-text text-darken-1">
                                 You are logged into{" "}
-                                <span style={{ fontFamily: "monospace" }}>Vircom</span> Ideas app 👏
+                                <span style={{ fontFamily: "monospace" }}>Taxonomy</span> Ideas app 👏
                             </h1>
                         </h4>
                         <button
@@ -55,7 +59,7 @@ class Dashboard extends Component {
                             }}
                             className="btn btn-large btn-flat waves-effect white black-text"
                         >
-                            Create An Idea
+                            Create An Project
                         </Link>
                     </div>
                 </div>
@@ -64,4 +68,4 @@ class Dashboard extends Component {
     }
 }
 
-export default withRouter(Dashboard);
+export default withRouter(DeptDashboard);

@@ -10,6 +10,14 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import Dashboard from "./components/dashboard/Dashboard";
 import PayTax from "./components/dashboard/PayTax";
+import DeptLogin from "./components/auth/DeptLogin";
+import DeptDashboard from "./components/dashboard/DeptDashboard";
+import DeptRegister from "./components/auth/DeptRegister";
+import CreatePro from "./components/dashboard/CreatePro";
+import Projects from "./components/dashboard/Projects";
+import Request from "./components/dashboard/Request";
+import RequestsList from "./components/dashboard/RequestsList";
+import Vote from "./components/dashboard/Vote";
 import PrivateRoute from "./utils/PrivateRoute";
 import "./App.css";
 
@@ -21,7 +29,9 @@ class App extends Component {
       accounts: null,
       contract: null,
       auth: false,
-      res: null
+      deptauth: false,
+      res: null,
+      dres: null
     }
   }
 
@@ -60,6 +70,28 @@ class App extends Component {
       auth: true,
       res: data
     });
+    console.log(this.state.auth)
+  }
+
+  notauthenticate = () => {
+    this.setState({
+      auth: false,
+      res: null
+    });
+  }
+
+  deptauthenticate = (data) => {
+    this.setState({
+      deptauth: true,
+      dres: data
+    });
+  }
+
+  notdeptauthenticate = () => {
+    this.setState({
+      deptauth: false,
+      dres: null
+    });
   }
 
 
@@ -71,13 +103,22 @@ class App extends Component {
       <Router history={History}>
         <div className="App">
           <Navbar />
-          <button onClick={this.cli}>Connect</button>
           <Route exact path="/" component={Landing} />
           <Route exact path="/register" component={() => <Register contract={this.state.contract} accounts={this.state.accounts} />} />
-          <Route exact path="/login" component={() => <Login contract={this.state.contract} accounts={this.state.accounts} auth={this.state.auth} func={this.authenticate} />} />
+          <Route exact path="/login" component={() => <Login contract={this.state.contract} accounts={this.state.accounts} auth={this.state.auth} func={this.authenticate} notauth={this.notauthenticate} />} />
+          <Route exact path="/deptlogin" component={() => <DeptLogin contract={this.state.contract} accounts={this.state.accounts} deptauth={this.state.deptauth} deptfunc={this.deptauthenticate} />} />
+          <Route exact path="/deptregister" component={() => <DeptRegister contract={this.state.contract} accounts={this.state.accounts} />} />
+
           <Switch>
-            <PrivateRoute exact path="/dashboard" component={() => <Dashboard contract={this.state.contract} accounts={this.state.accounts} auth={this.state.auth} res={this.state.res} func={this.authenticate} />} isAuthenticated={this.state.auth} />
+            <PrivateRoute exact path="/dashboard" component={() => <Dashboard contract={this.state.contract} accounts={this.state.accounts} auth={this.state.auth} res={this.state.res} func={this.notauthenticate} />} isAuthenticated={this.state.auth} />
             <PrivateRoute exact path="/paytax" component={() => <PayTax contract={this.state.contract} accounts={this.state.accounts} res={this.state.res} />} isAuthenticated={this.state.auth} />
+            <PrivateRoute exact path="/vote" component={() => <Vote contract={this.state.contract} accounts={this.state.accounts} res={this.state.res} />} isAuthenticated={this.state.auth} />
+
+            <PrivateRoute exact path="/deptdashboard" component={() => <DeptDashboard contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} deptfunc={this.notdeptauthenticate} />} isAuthenticated={this.state.deptauth} />
+            <PrivateRoute exact path="/createproject" component={() => <CreatePro contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
+            <PrivateRoute exact path="/projects" component={() => <Projects contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
+            <PrivateRoute exact path="/request" component={() => <Request contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
+            <PrivateRoute exact path="/requestslist" component={() => <RequestsList contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
           </Switch>
         </div>
       </Router>
