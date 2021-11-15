@@ -105,16 +105,6 @@ class CreatePro extends Component {
                                 />
                                 <label htmlFor="name">Project Name</label>
                             </div>
-                            <div className="input-field col s12">
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.salary}
-                                    error={errors.salary}
-                                    id="salary"
-                                    type="number"
-                                />
-                                <label htmlFor="salary">Department No</label>
-                            </div>
                             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
                                 <button
                                     style={{

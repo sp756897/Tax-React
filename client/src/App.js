@@ -51,11 +51,11 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
-      console.log(contract)
-
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
       this.setState({ web3, accounts, contract });
+
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -103,7 +103,7 @@ class App extends Component {
       <Router history={History}>
         <div className="App">
           <Navbar />
-          <Route exact path="/" component={Landing} />
+          <Route exact path="/" component={() => <Landing contract={this.state.contract} accounts={this.state.accounts} />} />
           <Route exact path="/register" component={() => <Register contract={this.state.contract} accounts={this.state.accounts} />} />
           <Route exact path="/login" component={() => <Login contract={this.state.contract} accounts={this.state.accounts} auth={this.state.auth} func={this.authenticate} notauth={this.notauthenticate} />} />
           <Route exact path="/deptlogin" component={() => <DeptLogin contract={this.state.contract} accounts={this.state.accounts} deptauth={this.state.deptauth} deptfunc={this.deptauthenticate} />} />
@@ -111,14 +111,14 @@ class App extends Component {
 
           <Switch>
             <PrivateRoute exact path="/dashboard" component={() => <Dashboard contract={this.state.contract} accounts={this.state.accounts} auth={this.state.auth} res={this.state.res} func={this.notauthenticate} />} isAuthenticated={this.state.auth} />
-            <PrivateRoute exact path="/paytax" component={() => <PayTax contract={this.state.contract} accounts={this.state.accounts} res={this.state.res} />} isAuthenticated={this.state.auth} />
+            <PrivateRoute exact path="/paytax" component={() => <PayTax web3={this.state.web3} contract={this.state.contract} accounts={this.state.accounts} res={this.state.res} />} isAuthenticated={this.state.auth} />
             <PrivateRoute exact path="/vote" component={() => <Vote contract={this.state.contract} accounts={this.state.accounts} res={this.state.res} />} isAuthenticated={this.state.auth} />
 
             <PrivateRoute exact path="/deptdashboard" component={() => <DeptDashboard contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} deptfunc={this.notdeptauthenticate} />} isAuthenticated={this.state.deptauth} />
             <PrivateRoute exact path="/createproject" component={() => <CreatePro contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
             <PrivateRoute exact path="/projects" component={() => <Projects contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
-            <PrivateRoute exact path="/request" component={() => <Request contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
-            <PrivateRoute exact path="/requestslist" component={() => <RequestsList contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
+            <PrivateRoute exact path="/request" component={() => <Request web3={this.state.web3} contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
+            <PrivateRoute exact path="/requestslist" component={() => <RequestsList web3={this.state.web3} contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
           </Switch>
         </div>
       </Router>

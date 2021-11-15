@@ -26,7 +26,7 @@ class DeptDashnav extends Component {
                     }}
                     className="btn btn-large waves-effect waves-light hoverable #2196f3 blue"
                 >
-                    DeptDashboard
+                    Dashboard
                 </Link>
                 <Link
                     to="/createproject"

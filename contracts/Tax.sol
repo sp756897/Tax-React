@@ -34,6 +34,15 @@ contract Tax {
     mapping(uint256 => Payer) public payers;
     mapping(address => Payer) public payerbyaddr;
     uint256 public payerCount;
+    string acthash;
+
+    function sethash(string memory hash) public {
+        acthash = hash;
+    }
+
+    function gethash() public view returns (string memory) {
+        return acthash;
+    }
 
     function getPayer(address _PayerAddr) public view returns (Payer memory) {
         return payerbyaddr[_PayerAddr];
@@ -146,13 +155,21 @@ contract Tax {
         returns (
             string memory,
             string memory,
-            uint256
+            uint256,
+            uint256,
+            bool
         )
     {
         Request storage req = deptbyuint[deptno].probyuint[prono].reqbyuint[
             reqno
         ];
-        return (req.title, req.desc, req.moneyreq);
+        return (
+            req.title,
+            req.desc,
+            req.moneyreq,
+            req.votersCount,
+            req.granted
+        );
     }
 
     function getProcount(uint256 deptno) public view returns (uint256) {

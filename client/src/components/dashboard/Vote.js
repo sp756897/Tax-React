@@ -16,6 +16,36 @@ class Vote extends Component {
         }
     }
 
+    onSubmit = async (deptid, proid, reqid, e) => {
+        const { accounts, contract } = this.state;
+
+        e.preventDefault()
+        try {
+            console.log(deptid, proid, reqid)
+            await contract.methods.voteforPro(deptid, proid, reqid).send({ from: accounts[0] });
+            toast.success('🦄 Vote Registered 👍', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        catch (err) {
+            toast.error('🦄 Try Agian!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    }
+
     async componentDidMount() {
         const { contract } = this.state;
 
@@ -49,7 +79,9 @@ class Vote extends Component {
                         var newReq = {
                             title: req[0],
                             desc: req[1],
-                            money: req[2]
+                            money: req[2],
+                            voters: req[3],
+                            granted: req[4]
                         }
                         templist.push(newReq)
                     }
@@ -107,36 +139,38 @@ class Vote extends Component {
             <div class="row" key={key} >
                 <h4>Department: <b>{dept.dept.deptname}</b> </h4>
                 {
-                    dept.pros.map((pro, key) => (
-                        <div class="row" key={key} >
+                    dept.pros.map((pro, key1) => (
+                        <div class="row" key={key1} >
                             <h4>Project: <b>{pro.pro.proname}</b></h4>
                             {
-                                pro.reqs.map((req, key) => (
-                                    <div class="row" key={key} >
-                                        <div class="col s12 m8 offset-m2 l6 offset-l3" key={key}>
-                                            <div class="card-panel #eceff1 blue-grey lighten-5 z-depth-1" style={{ borderWidth: "1px", borderColor: "black", borderBlockStyle: "double" }}>
-                                                <div class="row valign-wrapper">
-                                                    <div class="col s10">
-                                                        <span class="black-text">
-                                                            {req.title}
-                                                        </span>
+                                pro.reqs.map((req, key2) => (
+                                    !req.granted ? (
+                                        <div class="row" key={key2} >
+                                            <div class="col s12 m8 offset-m2 l6 offset-l3" key={key}>
+                                                <div class="card-panel #eceff1 blue-grey lighten-5 z-depth-1" style={{ borderWidth: "1px", borderColor: "black", borderBlockStyle: "double" }}>
+                                                    <div class="row valign-wrapper">
+                                                        <div class="col s10">
+                                                            <span class="black-text">
+                                                                {req.title}
+                                                            </span>
+                                                        </div>
+                                                        <button
+                                                            style={{
+                                                                width: "150px",
+                                                                borderRadius: "3px",
+                                                                letterSpacing: "1.5px",
+                                                                marginTop: "1rem"
+                                                            }}
+                                                            onClick={(e) => this.onSubmit(dept.dept.deptid, (key1 + 1), (key2 + 1), e)}
+                                                            className="btn btn-small waves-effect waves-light hoverable blue accent-3"
+                                                        >
+                                                            Vote
+                                                        </button>
                                                     </div>
-                                                    <button
-                                                        style={{
-                                                            width: "150px",
-                                                            borderRadius: "3px",
-                                                            letterSpacing: "1.5px",
-                                                            marginTop: "1rem"
-                                                        }}
-                                                        //onClick={(e) => this.onSubmit(reqs, e)}
-                                                        className="btn btn-small waves-effect waves-light hoverable blue accent-3"
-                                                    >
-                                                        Vote
-                                                    </button>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </div>)
+                                        : ""
                                 ))
                             }
                         </div>

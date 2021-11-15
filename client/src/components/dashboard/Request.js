@@ -9,6 +9,7 @@ class Request extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            web3: this.props.web3,
             request: null,
             title: "",
             desc: "",
@@ -32,7 +33,14 @@ class Request extends Component {
 
     onSubmit = async (e) => {
         e.preventDefault();
-        const { accounts, contract, res } = this.state;
+        const { accounts, contract, res, web3 } = this.state;
+
+        console.log(this.state.request)
+
+
+        let strtax = this.state.request.toString()
+
+        const weiTax = web3.utils.toWei(strtax, "ether")
 
         if (this.state.request === null) {
             toast.error('Please fill Amount !', {
@@ -48,7 +56,7 @@ class Request extends Component {
         }
 
         try {
-            var resop = await contract.methods.requestFund(res.id, this.state.proid, this.state.request, this.state.title, this.state.desc).send({ from: accounts[0] });
+            var resop = await contract.methods.requestFund(res.id, this.state.proid, weiTax, this.state.title, this.state.desc).send({ from: accounts[0] });
             console.log(resop)
             toast.success('🦄 Request Created 👍', {
                 position: "top-right",

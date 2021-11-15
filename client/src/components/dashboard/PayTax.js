@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import Dashnav from "./DashNav";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ipfs from "../../Ipfs";
 
 class PayTax extends Component {
     constructor(props) {
@@ -7,7 +10,8 @@ class PayTax extends Component {
         this.state = {
             accounts: this.props.accounts,
             contract: this.props.contract,
-            res: this.props.res
+            res: this.props.res,
+            web3: this.props.web3
         }
     }
 
@@ -17,18 +21,103 @@ class PayTax extends Component {
 
     onSubmit = async (e) => {
         e.preventDefault();
-        const { accounts, contract, res } = this.state;
+        const { accounts, contract, res, web3 } = this.state;
 
-        await contract.methods.payTax().send({ from: accounts[0], value: 100000000000000 });
+        const taxSal = Math.floor(res.salary * 0.18)
+        let strtax = taxSal.toString()
+        const weiTax = web3.utils.toWei(strtax, "ether")
 
-        const resp = await contract.methods.getPayer(accounts[0]).call();
+        try {
+            await contract.methods.payTax().send({ from: accounts[0], value: weiTax });
 
-        this.setState({ res: resp });
+            const resp = await contract.methods.getPayer(accounts[0]).call();
+
+            this.setState({ res: resp });
+
+            let date = new Date()
+
+            const paid = {
+                name: res.name,
+                tax: strtax,
+                date: (date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear())
+            }
+
+
+
+            let acthash = await contract.methods.gethash().call();
+            let js = []
+            let buf = null
+            let hash = 0
+            let t1 = null
+
+            if (acthash !== "") {
+                try {
+                    await ipfs.files.cat(acthash).then(data => {
+                        console.log(data.toString())
+                        console.log(JSON.parse(data.toString()))
+                        let d = data.toString()
+
+                        JSON.parse(d).map((val, key) => (
+                            js.push(val)
+                        ));
+                        console.log(js)
+                        js.push(paid)
+                    }
+                    )
+                }
+                catch {
+                    js.push(paid)
+                }
+
+                t1 = JSON.stringify(js)
+            }
+            else {
+                t1 = JSON.stringify(paid)
+
+            }
+
+            buf = Buffer.from(t1)
+            hash = 0
+
+
+            await ipfs.files.add(buf)
+                .then(result => {
+                    console.log(result)
+                    console.log(result[0].hash)
+                    hash = result[0].hash
+                }
+                )
+
+            await contract.methods.sethash(hash).send({ from: accounts[0] });
+
+            toast.success('🦄 Tax Paid 👍', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        catch (err) {
+            toast.error('🦄 Try Agian!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            console.log(err)
+        }
+
 
     }
 
     render() {
-        const { res } = this.state;
+        const { res, web3 } = this.state;
 
         const taxes = ["Transportation", "Consumer"]
         const taxList = taxes.map((val, key) => (
@@ -45,7 +134,7 @@ class PayTax extends Component {
                                 </div>
                                 <div class="col s10">
                                     <span class="black-text">
-                                        Salary : {res.salary} Tax : {res.tax}
+                                        Salary : {res.salary} Tax : {web3.utils.fromWei(res.tax, "ether")}
                                     </span>
                                 </div>
                                 <button
@@ -71,6 +160,19 @@ class PayTax extends Component {
             <div class="row">
                 <Dashnav />
                 {taxList}
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+                {/* Same as */}
+                <ToastContainer />
             </div>
         )
     }
