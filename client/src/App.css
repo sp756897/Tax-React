@@ -1,6 +1,3 @@
-.App {
-  text-align: center;
-}
 
 .App-logo {
   height: 40vmin;
@@ -21,6 +18,16 @@
   color: #09d3ac;
 }
 
-body{
-  background-image: url("https://giphy.com/embed/9JxkPTP3alOykb8PmQ");
+.card{
+  background-image: linear-gradient(rgb(179, 26, 255),rgb(26, 182, 255));
+}
+
+#video{
+  position: fixed;
+  z-index: -1;
+  width: 100%;
+}
+
+.collection{
+  background-image: linear-gradient(rgb(179, 26, 255),rgb(26, 182, 255));
 }

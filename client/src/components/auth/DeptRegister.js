@@ -42,15 +42,6 @@ class DeptRegister extends Component {
         try {
             var resop = await contract.methods.addDept(this.state.name).send({ from: accounts[0] });
             console.log(resop)
-            toast.success('🦄 Project Created 👍', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
 
 
             this.props.history.push("/deptlogin");

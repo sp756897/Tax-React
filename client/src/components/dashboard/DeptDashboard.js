@@ -10,12 +10,23 @@ class DeptDashboard extends Component {
         this.state = {
             accounts: this.props.accounts,
             contract: this.props.contract,
-            response: JSON.parse(localStorage.getItem("deptData"))
+            response: this.props.res,
+            proco: 0
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        const { contract, proco } = this.state
         console.log(JSON.parse(localStorage.getItem("deptData")))
+        await contract.methods.getProcount(this.state.response.id).call()
+            .then((res) => {
+                console.log(res)
+                this.setState({
+                    proco: res
+                })
+            })
+
+        console.log(proco)
     }
 
     onLogoutClick = e => {
@@ -25,42 +36,52 @@ class DeptDashboard extends Component {
     };
 
     render() {
-        const { response } = this.state;
+        const { response, proco } = this.state;
+        console.log(proco)
         return (
             <div class="row">
                 <DeptDashnav />
-                <div class="col s12 m8 l9" style={{ marginTop: "9rem" }}>
+                <div class="col s12 m8 l9" style={{ marginTop: "1rem" }}>
                     <div className="col s12 center-align">
                         <h4>
-                            <b>Hey there,</b> {response.deptname} What's Up?<br></br>
+                            <b>Department </b> {response.deptname}<br></br>
                             <h1 className="flow-text grey-text text-darken-1">
-                                You are logged into{" "}
-                                <span style={{ fontFamily: "monospace" }}>Taxonomy</span> Ideas app 👏
+                                Welcome to{" "}
+                                <span style={{ fontFamily: "monospace" }}>{response.deptname}</span> Department
                             </h1>
                         </h4>
-                        <button
-                            style={{
-                                width: "150px",
-                                borderRadius: "3px",
-                                letterSpacing: "1.5px",
-                                marginTop: "1rem"
-                            }}
-                            onClick={this.onLogoutClick}
-                            className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                        >
-                            Logout
-                        </button>
-                        <Link
-                            to="/idea"
-                            style={{
-                                width: "140px",
-                                borderRadius: "3px",
-                                letterSpacing: "1.5px"
-                            }}
-                            className="btn btn-large btn-flat waves-effect white black-text"
-                        >
-                            Create An Project
-                        </Link>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <div id="cardsit" class="card grey z-depth-4" style={{ padding: "1rem" }} >
+                                <div class="card-content white-text">
+                                    <span class="card-title"><b>Department</b> </span>
+                                    <p>Department name is {response.deptname}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6">
+                            <div id="cardsit" class="card grey z-depth-4" style={{ padding: "1rem" }} >
+                                <div class="card-content white-text">
+                                    <span class="card-title"><b>Eth Address</b> </span>
+                                    <p style={{
+                                        display: "inline-block",
+                                        overflow: "hidden",
+                                        maxWidth: "30ch",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap"
+                                    }}>Head Ethereum Address is {response.mgraddr}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 m6">
+                            <div id="cardsit" class="card grey z-depth-4" style={{ padding: "1rem" }} >
+                                <div class="card-content white-text">
+                                    <span class="card-title"><b>Projects</b> </span>
+                                    <p>Number of Projects Created {proco}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,12 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const Moralis = require('moralis');
+const serverUrl = "https://elddabsw3kbf.usemoralis.com:2053/server";
+const appId = "GtS9MzGzz8Vq7PkM80BBI52svjTJAnzInRogj1JN";
+Moralis.start({ serverUrl, appId });
 
 class DeptLogin extends Component {
     constructor(props) {
@@ -25,25 +32,61 @@ class DeptLogin extends Component {
         e.preventDefault();
         const { accounts, contract } = this.state;
 
-        const res = await contract.methods.getHead(accounts[0]).call();
+        try {
 
-        console.log(res[0])
+            const user = await Moralis.authenticate({ signingMessage: "Authenticating Your Account" })
+                .then(function (user) {
+                    console.log("logged in user:", user);
+                    console.log(user.get("ethAddress"));
 
-        const depthead = {
-            id: res[0],
-            deptname: res[1]
+                })
+                .catch(function (error) {
+                    console(error);
+                });
+
+            const res = await contract.methods.getHead(accounts[0]).call();
+
+            console.log(res)
+
+            const depthead = {
+                id: res[0],
+                deptname: res[1],
+                mgraddr: res[2],
+                projectCount: res[3]
+            }
+
+            if (res[0] != 0) {
+                console.log("Signed On Department")
+                console.log("res:", JSON.stringify(depthead))
+                this.props.deptfunc(depthead)
+                localStorage.setItem("deptData", JSON.stringify(depthead));
+                this.props.history.push("/deptdashboard");
+            }
+            else {
+                console.log("Please Sign Up")
+                toast.error('You are not a Department Head!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+        }
+        catch {
+            toast.error('Authentication Failed!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
 
-        if (res[0] != 0) {
-            console.log("Signed On Department")
-            console.log("res:", JSON.stringify(depthead))
-            this.props.deptfunc(depthead)
-            localStorage.setItem("deptData", JSON.stringify(depthead));
-            this.props.history.push("/deptdashboard");
-        }
-        else {
-            console.log("Please Sign Up")
-        }
     };
     render() {
         const { errors } = this.state;
@@ -64,27 +107,8 @@ class DeptLogin extends Component {
                             </p>
                         </div>
                         <form noValidate onSubmit={this.onSubmit}>
-                            <div className="input-field col s12">
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.email}
-                                    error={errors.email}
-                                    id="email"
-                                    type="email"
-                                />
-                                <label htmlFor="email">Email</label>
-                            </div>
-                            <div className="input-field col s12">
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.password}
-                                    error={errors.password}
-                                    id="password"
-                                    type="password"
-                                />
-                                <label htmlFor="password">Password</label>
-                            </div>
-                            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+
+                            <div className="col s12" style={{ paddingLeft: "11.250px", paddingTop: "2rem" }}>
                                 <button
                                     style={{
                                         width: "150px",
@@ -101,6 +125,19 @@ class DeptLogin extends Component {
                         </form>
                     </div>
                 </div>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+                {/* Same as */}
+                <ToastContainer />
             </div>
         );
     }

@@ -9,7 +9,8 @@ contract Tax {
     struct Payer {
         uint256 id;
         string name;
-        uint256 tax;
+        uint256 incomeTax;
+        uint256 transportTax;
         uint256 salary;
         address PayerAddr;
     }
@@ -48,22 +49,34 @@ contract Tax {
         return payerbyaddr[_PayerAddr];
     }
 
+    function getPayerCount() public view returns (uint256) {
+        return payerCount;
+    }
+
     function addPayer(string memory name, uint256 _salary) public notPayer {
         payerCount++;
-        payers[payerCount] = Payer(payerCount, name, 0, _salary, msg.sender);
+        payers[payerCount] = Payer(payerCount, name, 0, 0, _salary, msg.sender);
         payerbyaddr[msg.sender] = Payer(
             payerCount,
             name,
+            0,
             0,
             _salary,
             msg.sender
         );
     }
 
-    function payTax() public payable minTax isPayer {
-        payerbyaddr[msg.sender].tax += msg.value;
+    function payTax(uint256 taxName) public payable minTax isPayer {
         Payer memory temp = payerbyaddr[msg.sender];
-        payers[temp.id].tax += msg.value;
+        if (taxName == 1) {
+            payerbyaddr[msg.sender].incomeTax += msg.value;
+
+            payers[temp.id].incomeTax += msg.value;
+        } else if (taxName == 2) {
+            payerbyaddr[msg.sender].transportTax += msg.value;
+
+            payers[temp.id].transportTax += msg.value;
+        }
     }
 
     function getSummary() public view returns (uint256) {
@@ -121,10 +134,15 @@ contract Tax {
     function getHead(address mgrAddr)
         public
         view
-        returns (uint256, string memory)
+        returns (
+            uint256,
+            string memory,
+            address,
+            uint256
+        )
     {
         Department storage head = deptbyaddr[mgrAddr];
-        return (head.id, head.deptname);
+        return (head.id, head.deptname, head.mgrAddr, head.proCount);
     }
 
     function getdept(uint256 deptno)

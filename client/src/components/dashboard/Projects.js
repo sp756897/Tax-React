@@ -12,7 +12,7 @@ class Projects extends Component {
             accounts: this.props.accounts,
             contract: this.props.contract,
             res: this.props.res,
-            prolist: []
+            prolist: [],
         }
     }
 
@@ -22,7 +22,6 @@ class Projects extends Component {
         try {
 
             var procount = await contract.methods.getProcount(res.id).call();
-            console.log(procount)
             var prolist = []
             for (let i = 1; i <= procount; i++) {
                 var prodet = await contract.methods.getProject(res.id, i).call();
@@ -36,17 +35,6 @@ class Projects extends Component {
             this.setState({
                 prolist: prolist
             })
-            console.log(prolist)
-
-            toast.success('🦄 Project Created 👍', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
         }
         catch (err) {
             toast.error('🦄 Try Agian!', {
@@ -68,37 +56,45 @@ class Projects extends Component {
 
         const prosits = prolist.map((pro, key) =>
         (
-            <div class="col s21 m20" key={key}>
-                <div class="card #76ff03 light-green accent-3">
-                    <div class="card-content black-text" style={{ marginBottom: "3rem" }}>
-                        <span class="card-title">{pro.proname}</span>
-                        <p>{pro.proreq}</p>
-                    </div>
-                    <div class="card-action">
-                        <a href="#" style={{ color: "#76ff03" }}>*******************</a>
-                        <a href="#" style={{ color: "#76ff03" }}>*******************</a>
-                    </div>
-                    <Link
-                        to={{
-                            pathname: "/request",
-                            proid: {
-                                proid: (key + 1)
-                            }
-                        }}
-                        style={{
-                            width: "140px",
-                            borderRadius: "3px",
-                            letterSpacing: "1.5px",
-                            width: "100%",
-                            margin: "6px 6px"
-                        }}
-                        className="btn waves-effect waves-light hoverable black"
-                    >
-                        Request
-                    </Link>
+            <div class="">
+                <div key={key} class="col s12 m8 l8" style={{ paddingBottom: "2rem" }}>
+                    <ul class="collection z-depth-3" style={{ padding: "2rem" }}>
+                        <li class="collection-item avatar">
+                            <li class="collection-header" style={{ fontWeight: "bold" }}><h6><b>{pro.proname}</b></h6></li>
+                            <p>The name of Project is {pro.proname}
+                            </p>
+                            <div class="valign-wrapper">
+                                <div class="secondary-content">
+                                    <Link
+                                        to={{
+                                            pathname: "/request",
+                                            proid: {
+                                                proid: (key + 1)
+                                            }
+                                        }}
+                                        style={{
+                                            width: "150px",
+                                            borderRadius: "3px",
+                                            letterSpacing: "1.5px",
+                                            marginTop: "1rem",
+                                            float: "right"
+                                        }}
+                                        className="btn btn-small waves-effect waves-light hoverable blue accent-3"
+                                    >
+                                        Request
+                                    </Link>
+                                </div>
+                            </div>
+
+                        </li>
+                    </ul>
+
                 </div>
             </div>
+
         ));
+        console.log(prosits.length === 0)
+
 
         return (
             <div class="row">
@@ -115,9 +111,7 @@ class Projects extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col s12 center-align">
-                        {this.state.prolist ? prosits : ""}
-                    </div>
+                    {prosits.length === 0 ? (<div><h4>No Projects Created Yet!</h4></div>) : prosits}
                 </div>
                 <ToastContainer
                     position="top-right"

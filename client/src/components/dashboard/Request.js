@@ -60,7 +60,7 @@ class Request extends Component {
             console.log(resop)
             toast.success('🦄 Request Created 👍', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -71,7 +71,7 @@ class Request extends Component {
         catch (err) {
             toast.error('🦄 Try Agian!', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,

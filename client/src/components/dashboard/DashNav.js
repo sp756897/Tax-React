@@ -54,7 +54,8 @@ class Dashnav extends Component {
                 >
                     Vote
                 </Link>
-                <button
+                <Link
+                    to="/logout"
                     style={{
                         width: "140px",
                         borderRadius: "3px",
@@ -62,11 +63,10 @@ class Dashnav extends Component {
                         width: "100%",
                         margin: "6px 6px"
                     }}
-                    onClick={this.onLogoutClick}
                     className="btn btn-large waves-effect waves-light hoverable #2196f3 blue"
                 >
                     Logout
-                </button>
+                </Link>
             </div>
         );
     }

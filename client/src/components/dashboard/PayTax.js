@@ -19,7 +19,7 @@ class PayTax extends Component {
 
     }
 
-    onSubmit = async (e) => {
+    onSubmit = async (taxName, e) => {
         e.preventDefault();
         const { accounts, contract, res, web3 } = this.state;
 
@@ -28,7 +28,7 @@ class PayTax extends Component {
         const weiTax = web3.utils.toWei(strtax, "ether")
 
         try {
-            await contract.methods.payTax().send({ from: accounts[0], value: weiTax });
+            await contract.methods.payTax(taxName).send({ from: accounts[0], value: weiTax });
 
             const resp = await contract.methods.getPayer(accounts[0]).call();
 
@@ -92,7 +92,7 @@ class PayTax extends Component {
 
             toast.success('🦄 Tax Paid 👍', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -103,7 +103,7 @@ class PayTax extends Component {
         catch (err) {
             toast.error('🦄 Try Agian!', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -119,39 +119,40 @@ class PayTax extends Component {
     render() {
         const { res, web3 } = this.state;
 
-        const taxes = ["Transportation", "Consumer"]
+
+        const taxes = ["Income", "Transportation"]
         const taxList = taxes.map((val, key) => (
-            <div key={key} class="col s12 m8 l9" style={{ marginTop: "1rem" }}>
-                <div className="col s12 center-align">
-                    <div>
-                        <h4>
-                            {val}
-                        </h4>
-                        <div class="card-panel #eceff1 blue-grey lighten-5 z-depth-1" style={{ borderWidth: "1px", borderColor: "black", borderBlockStyle: "double" }}>
-                            <div class="row valign-wrapper">
-                                <div class="col s2">
-                                    <i className="material-icons">directions_car</i>
+            <div class="">
+                <div key={key} class="col s12 m8 l8" style={{ paddingBottom: "2rem" }}>
+                    <ul class="collection z-depth-3" style={{ padding: "2rem" }}>
+                        <li class="collection-item avatar">
+                            <li class="collection-header" style={{ fontWeight: "bold" }}><h6><b>{val}</b></h6></li>
+                            <p>Your Salary is {res.salary} eth <br></br>
+                                You have paid {key == 0 ? web3.utils.fromWei(res.incomeTax, "ether") : web3.utils.fromWei(res.transportTax, "ether")} eth as Tax
+                            </p>
+                            <div class="valign-wrapper">
+                                <div class="secondary-content">
+                                    <button
+                                        style={{
+                                            width: "150px",
+                                            borderRadius: "3px",
+                                            letterSpacing: "1.5px",
+                                            marginTop: "1rem",
+                                            float: "right"
+                                        }}
+                                        onClick={(e) => this.onSubmit((key + 1), e)}
+                                        className="btn btn-small waves-effect waves-light hoverable blue accent-3"
+                                    >
+                                        {
+                                            key == 0 ? (res.incomeTax > 0 ? "Paid" : "Pay") : (res.transportTax > 0 ? "Paid" : "Pay")
+                                        }
+                                    </button>
                                 </div>
-                                <div class="col s10">
-                                    <span class="black-text">
-                                        Salary : {res.salary} Tax : {web3.utils.fromWei(res.tax, "ether")}
-                                    </span>
-                                </div>
-                                <button
-                                    style={{
-                                        width: "150px",
-                                        borderRadius: "3px",
-                                        letterSpacing: "1.5px",
-                                        marginTop: "1rem"
-                                    }}
-                                    onClick={this.onSubmit}
-                                    className="btn btn-small waves-effect waves-light hoverable blue accent-3"
-                                >
-                                    {res.tax > 0 ? "Paid" : "Pay"}
-                                </button>
                             </div>
-                        </div>
-                    </div>
+
+                        </li>
+                    </ul>
+
                 </div>
             </div>
         ));
@@ -159,7 +160,9 @@ class PayTax extends Component {
         return (
             <div class="row">
                 <Dashnav />
-                {taxList}
+                <div class="">
+                    {taxList}
+                </div>
                 <ToastContainer
                     position="top-right"
                     autoClose={5000}

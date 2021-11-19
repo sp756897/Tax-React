@@ -13,7 +13,9 @@ class RequestsList extends Component {
             accounts: this.props.accounts,
             contract: this.props.contract,
             res: this.props.res,
-            reqlist: []
+            reqlist: [],
+            reqCount: 0,
+            payerCount: 0
         }
     }
 
@@ -21,9 +23,9 @@ class RequestsList extends Component {
         const { contract, res, web3 } = this.state;
 
         try {
-
+            var reqCount = 0
+            var payerCount = await contract.methods.getPayerCount().call();
             var procount = await contract.methods.getProcount(res.id).call();
-            console.log(procount)
             var reqlist = []
             for (let i = 1; i <= procount; i++) {
                 var prodet = await contract.methods.getProject(res.id, i).call();
@@ -31,7 +33,7 @@ class RequestsList extends Component {
                     proname: prodet[0],
                     proreq: prodet[1]
                 }
-                var reqCount = await contract.methods.getReqCount(res.id, i).call();
+                reqCount = await contract.methods.getReqCount(res.id, i).call();
                 var templist = []
                 for (let j = 1; j <= reqCount; j++) {
                     var req = await contract.methods.getRequest(res.id, i, j).call();
@@ -50,25 +52,21 @@ class RequestsList extends Component {
                     pro: pro,
                     reqs: templist
                 }
-                reqlist.push(sample)
-                console.log(pro, reqlist)
+                if (reqCount > 0) {
+                    reqlist.push(sample)
+                }
 
             }
 
             this.setState({
-                reqlist: reqlist
+                reqlist: reqlist,
+                reqCount: reqCount,
+                payerCount: payerCount
             })
 
 
-            toast.success('🦄 Project Created 👍', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+
+
         }
         catch (err) {
             toast.error('🦄 Try Agian!', {
@@ -90,11 +88,10 @@ class RequestsList extends Component {
 
         e.preventDefault()
         try {
-            console.log(deptid, proid, reqid)
             await contract.methods.grantFund(deptid, proid, reqid).send({ from: accounts[0] });
             toast.success('🦄 Fund Granted 👍', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -105,46 +102,48 @@ class RequestsList extends Component {
         catch (err) {
             toast.error('🦄 Try Agian!', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
             });
+            console.log(err)
         }
     }
 
+
     render() {
 
-        const { reqlist, res } = this.state;
-        var reqsits = null
-        if (reqlist !== []) {
-            reqsits = reqlist.map((req, key) =>
-            (<div class="row z-depth-4">
-                <h4 key={key}>
-                    Project: <b> {req.pro.proname} </b>
-                </h4>
-                <div class="row">
-                    <table class="highlight">
+        const { reqlist, res, reqCount, payerCount } = this.state;
+        const reqsits = reqlist.map((req, key) =>
+        (
+            <div style={{ padding: "3rem" }}>
+                <h6 key={key} style={{ fontFamily: "caudex", fontSize: "27px" }}>
+                    Project <b> {req.pro.proname} </b>
+                </h6>
+                <div class="row z-depth-3">
+                    <table class="highlight responsive-table centered" style={{ padding: "3rem", marginLeft: "2rem" }}>
                         <thead>
                             <tr>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Money</th>
-                                <th>Voters</th>
+                                <th>Voters / {payerCount}</th>
                             </tr>
                         </thead>
-                    </table>
-                </div>
-                {
-                    req.reqs.map((newReq, key1) => (
-                        <div class="row" key={key1}>
-                            <table class="highlight responsive-table">
+                        {
+                            req.reqs.map((newReq, key1) => (
                                 <tbody>
                                     <tr>
                                         <td>{newReq.title} </td>
-                                        <td>{newReq.desc}</td>
+                                        <td style={{
+                                            overflow: "hidden",
+                                            maxWidth: "10ch",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap"
+                                        }}>{newReq.desc}</td>
                                         <td>{newReq.money}</td>
                                         <td>{newReq.voters}</td>
                                         <td>
@@ -163,24 +162,23 @@ class RequestsList extends Component {
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>
-                        </div>
-                    ))
-                }
-
+                            ))
+                        }
+                    </table>
+                </div>
             </div>
 
-            ));
-        }
+        ));
+
 
         return (
             <div class="row">
                 <DeptDashnav />
-                <div class="col s12 m8 l9">
-                    <div class="container" >
-                        <div class="row">
-                            <div >
-                                <div >
+                <div class="col s12 m8 l9" style={{ padding: "2rem" }} >
+                    <div className="container">
+                        <div style={{ marginTop: "3rem" }} className="row">
+                            <div className="col s8 offset-s3">
+                                <div className="col s12" style={{ paddingLeft: "4px", marginLeft: "6rem" }}>
                                     <h4>
                                         <b>Requests</b> Board
                                     </h4>
@@ -189,19 +187,11 @@ class RequestsList extends Component {
                         </div>
                     </div>
                     {
-                        <div>
-                            {reqsits === null ? (<div class="preloader-wrapper big active">
-                                <div class="spinner-layer spinner-blue-only">
-                                    <div class="circle-clipper left">
-                                        <div class="circle"></div>
-                                    </div><div class="gap-patch">
-                                        <div class="circle"></div>
-                                    </div><div class="circle-clipper right">
-                                        <div class="circle"></div>
-                                    </div>
-                                </div>
-                            </div>) : reqsits}
-                        </div>
+
+                        reqsits.length === 0 ? (<div>
+                            <h4>No Requests Yet!</h4>
+                        </div>) : reqsits
+
                     }
                 </div>
                 <ToastContainer

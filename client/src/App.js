@@ -18,6 +18,8 @@ import Projects from "./components/dashboard/Projects";
 import Request from "./components/dashboard/Request";
 import RequestsList from "./components/dashboard/RequestsList";
 import Vote from "./components/dashboard/Vote";
+import Logout from "./components/dashboard/Logout";
+import DeptLogout from "./components/dashboard/DeptLogout";
 import PrivateRoute from "./utils/PrivateRoute";
 import "./App.css";
 
@@ -78,6 +80,7 @@ class App extends Component {
       auth: false,
       res: null
     });
+    localStorage.removeItem("userData")
   }
 
   deptauthenticate = (data) => {
@@ -92,6 +95,7 @@ class App extends Component {
       deptauth: false,
       dres: null
     });
+    localStorage.removeItem("deptdata")
   }
 
 
@@ -110,15 +114,17 @@ class App extends Component {
           <Route exact path="/deptregister" component={() => <DeptRegister contract={this.state.contract} accounts={this.state.accounts} />} />
 
           <Switch>
-            <PrivateRoute exact path="/dashboard" component={() => <Dashboard contract={this.state.contract} accounts={this.state.accounts} auth={this.state.auth} res={this.state.res} func={this.notauthenticate} />} isAuthenticated={this.state.auth} />
+            <PrivateRoute exact path="/dashboard" component={() => <Dashboard web3={this.state.web3} contract={this.state.contract} accounts={this.state.accounts} auth={this.state.auth} res={this.state.res} func={this.notauthenticate} />} isAuthenticated={this.state.auth} />
             <PrivateRoute exact path="/paytax" component={() => <PayTax web3={this.state.web3} contract={this.state.contract} accounts={this.state.accounts} res={this.state.res} />} isAuthenticated={this.state.auth} />
-            <PrivateRoute exact path="/vote" component={() => <Vote contract={this.state.contract} accounts={this.state.accounts} res={this.state.res} />} isAuthenticated={this.state.auth} />
+            <PrivateRoute exact path="/vote" component={() => <Vote web3={this.state.web3} contract={this.state.contract} accounts={this.state.accounts} res={this.state.res} />} isAuthenticated={this.state.auth} />
+            <PrivateRoute exact path="/logout" component={() => <Logout func={this.notauthenticate} />} isAuthenticated={this.state.auth} />
 
             <PrivateRoute exact path="/deptdashboard" component={() => <DeptDashboard contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} deptfunc={this.notdeptauthenticate} />} isAuthenticated={this.state.deptauth} />
             <PrivateRoute exact path="/createproject" component={() => <CreatePro contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
             <PrivateRoute exact path="/projects" component={() => <Projects contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
             <PrivateRoute exact path="/request" component={() => <Request web3={this.state.web3} contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
             <PrivateRoute exact path="/requestslist" component={() => <RequestsList web3={this.state.web3} contract={this.state.contract} accounts={this.state.accounts} res={this.state.dres} />} isAuthenticated={this.state.deptauth} />
+            <PrivateRoute exact path="/deptlogout" component={() => <DeptLogout func={this.notdeptauthenticate} />} isAuthenticated={this.state.deptauth} />
           </Switch>
         </div>
       </Router>

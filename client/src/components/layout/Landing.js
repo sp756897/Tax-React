@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import ipfs from "../../Ipfs";
 import "../../App.css"
+import frontImg from "../../assets/front.jpg"
 
 class Landing extends Component {
 
@@ -46,87 +47,75 @@ class Landing extends Component {
 
 
         const actlist = act === [] ? null : act.map((val, key) => (
-            <ul class="collection">
-                <li class="collection-item">Name: {val.name} Tax: {val.tax} Date: {val.date}</li>
+            <ul class="collection" style={{ borderRadius: "30px" }}>
+                <li class="collection-item">We congratulate {val.name} for paying {val.tax} eth as tax on {val.date}</li>
             </ul>
         ));
 
 
         return (
             <div class="row">
-                <iframe src="https://giphy.com/embed/9JxkPTP3alOykb8PmQ" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/trippy-gif-artist-ericaofanderson-9JxkPTP3alOykb8PmQ">via GIPHY</a></p>
-                <div style={{ height: "75vh" }} className="container valign-wrapper">
-                    <div className="row">
+                <div style={{ height: "75vh", paddingBottom: "6rem" }} className="valign-wrapper">
+                    <div className="row" style={{ paddingTop: "20rem", paddingBottom: "10rem" }}>
                         <div className="col s12 center-align">
-                            <h4>
-                                <b>Build</b> a login/auth app with the{" "}
-                                <span style={{ fontFamily: "monospace" }}>MERN</span> stack from
-                                scratch
-                            </h4>
-                            <p className="flow-text grey-text text-darken-1">
-                                Create a (minimal) full-stack app with user authentication via
-                                passport and JWTs
-                            </p>
-                            <br />
-                            <div className="col s6">
-                                <Link
-                                    to="/register"
-                                    style={{
-                                        width: "140px",
-                                        borderRadius: "3px",
-                                        letterSpacing: "1.5px"
-                                    }}
-                                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                                >
-                                    Register
-                                </Link>
+                            <div class="" >
+                                <div class="col s6 left-align" style={{ backgroundColor: "lightskyblue", padding: "2rem", borderRadius: "30px" }}>
+                                    <h6 style={{ fontWeight: "bold", fontSize: "40px", fontFamily: "caudex" }}>Taxonomy</h6>
+                                    <p style={{ fontWeight: "", fontSize: "33px", fontFamily: "caudex" }}>Welcome to your Tax management and Distribution System Completed maintained, managed and nurtored on Blockchain for Security and Integrity</p>
+                                    <div className="col s4">
+                                        <Link
+                                            to="/register"
+                                            style={{
+                                                width: "140px",
+                                                borderRadius: "30px",
+                                                letterSpacing: "1.5px"
+                                            }}
+                                            className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                                        >
+                                            Register
+                                        </Link>
+                                    </div>
+                                    <div className="col s4">
+                                        <Link
+                                            to="/login"
+                                            style={{
+                                                width: "140px",
+                                                borderRadius: "30px",
+                                                letterSpacing: "1.5px"
+                                            }}
+                                            className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                                        >
+                                            Log In
+                                        </Link>
+                                    </div>
+                                    <div className="col s4">
+                                        <Link
+                                            to="/deptlogin"
+                                            style={{
+                                                width: "140px",
+                                                borderRadius: "30px",
+                                                letterSpacing: "1.5px"
+                                            }}
+                                            className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                                        >
+                                            DeptLogIn
+                                        </Link>
+                                    </div>
+
+
+                                </div>
                             </div>
-                            <div className="col s6">
-                                <Link
-                                    to="/login"
-                                    style={{
-                                        width: "140px",
-                                        borderRadius: "3px",
-                                        letterSpacing: "1.5px"
-                                    }}
-                                    className="btn btn-large btn-flat waves-effect white black-text"
-                                >
-                                    Log In
-                                </Link>
-                            </div>
-                            <div className="col s6">
-                                <Link
-                                    to="/deptlogin"
-                                    style={{
-                                        width: "140px",
-                                        borderRadius: "3px",
-                                        letterSpacing: "1.5px"
-                                    }}
-                                    className="btn btn-large btn-flat waves-effect white black-text"
-                                >
-                                    Dept Log In
-                                </Link>
-                            </div>
-                            <div className="col s6">
-                                <Link
-                                    to="/deptregister"
-                                    style={{
-                                        width: "140px",
-                                        borderRadius: "3px",
-                                        letterSpacing: "1.5px"
-                                    }}
-                                    className="btn btn-large btn-flat waves-effect white black-text"
-                                >
-                                    Dept Register
-                                </Link>
+                            <div class="col s6">
+                                <img src={frontImg} style={{ objectFit: "cover", width: "100%", height: "100%" }}></img>
                             </div>
                         </div>
                     </div>
                 </div>
-                {actlist !== null ? (<div class="container center-align">
+                {actlist !== null ? (<div class="container center-align" style={{ paddingTop: "2rem" }} >
                     <div class="row">
                         <div class="">
-                            <div class="card blue z-depth-3" style={{ padding: "2rem", width: "100%" }}>
+
+                            <div class="card blue z-depth-3" style={{ padding: "2rem", width: "100%", borderRadius: "18px" }}>
                                 {actlist}
                             </div>
                         </div>

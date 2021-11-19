@@ -58,7 +58,7 @@ class CreatePro extends Component {
             console.log(resop)
             toast.success('🦄 Project Created 👍', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -86,55 +86,57 @@ class CreatePro extends Component {
         return (
             <div class="row">
                 <DeptDashnav />
-                <div class="col s12 m8 l9" style={{ marginTop: "9rem" }}>
-                    <div className="col s12 center-align">
+                <div class="">
+                    <div class="col s12 m8 l9 center-align" style={{ marginTop: "9rem", paddingRight: "6rem", paddingLeft: "6rem" }}>
+                        <div className="col s12">
 
-                        <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                            <h4>
-                                <b>Create</b> Project
-                            </h4>
-                        </div>
-                        <form noValidate onSubmit={this.onSubmit}>
-                            <div className="input-field col s12">
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.name}
-                                    error={errors.name}
-                                    id="name"
-                                    type="text"
-                                />
-                                <label htmlFor="name">Project Name</label>
-                            </div>
                             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
-                                <button
-                                    style={{
-                                        width: "150px",
-                                        borderRadius: "3px",
-                                        letterSpacing: "1.5px",
-                                        marginTop: "1rem"
-                                    }}
-                                    type="submit"
-                                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                                >
-                                    Create
-                                </button>
+                                <h4>
+                                    <b>Create</b> Project
+                                </h4>
                             </div>
-                        </form>
+                            <form noValidate onSubmit={this.onSubmit}>
+                                <div className="input-field col s12">
+                                    <input
+                                        onChange={this.onChange}
+                                        value={this.state.name}
+                                        error={errors.name}
+                                        id="name"
+                                        type="text"
+                                    />
+                                    <label htmlFor="name">Project Name</label>
+                                </div>
+                                <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+                                    <button
+                                        style={{
+                                            width: "150px",
+                                            borderRadius: "3px",
+                                            letterSpacing: "1.5px",
+                                            marginTop: "1rem"
+                                        }}
+                                        type="submit"
+                                        className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+                                    >
+                                        Create
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={2000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                    />
+                    {/* Same as */}
+                    <ToastContainer />
                 </div>
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
-                {/* Same as */}
-                <ToastContainer />
             </div>
         )
     }

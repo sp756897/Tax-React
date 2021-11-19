@@ -12,6 +12,7 @@ class Vote extends Component {
             accounts: this.props.accounts,
             contract: this.props.contract,
             res: this.props.res,
+            web3: this.props.web3,
             votelist: []
         }
     }
@@ -25,7 +26,7 @@ class Vote extends Component {
             await contract.methods.voteforPro(deptid, proid, reqid).send({ from: accounts[0] });
             toast.success('🦄 Vote Registered 👍', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -34,9 +35,9 @@ class Vote extends Component {
             });
         }
         catch (err) {
-            toast.error('🦄 Try Agian!', {
+            toast.error('Already Vote Registered!', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -106,20 +107,11 @@ class Vote extends Component {
                 votelist: votelist
             })
 
-            toast.success('🦄 Project Created 👍', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
         }
         catch (err) {
             toast.error('🦄 Try Agian!', {
                 position: "top-right",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -132,28 +124,54 @@ class Vote extends Component {
 
     render() {
 
-        const { votelist } = this.state;
+        const { votelist, web3 } = this.state;
 
         const votesits = votelist.map((dept, key) =>
         (
-            <div class="row" key={key} >
-                <h4>Department: <b>{dept.dept.deptname}</b> </h4>
+            <div class="row" key={key} style={{ padding: "3rem" }}>
+                <h6 key={key} style={{ fontFamily: "caudex", fontSize: "27px" }}>
+                    Department <b> {dept.dept.deptname} </b>
+                </h6>
                 {
                     dept.pros.map((pro, key1) => (
-                        <div class="row" key={key1} >
-                            <h4>Project: <b>{pro.pro.proname}</b></h4>
-                            {
-                                pro.reqs.map((req, key2) => (
-                                    !req.granted ? (
-                                        <div class="row" key={key2} >
-                                            <div class="col s12 m8 offset-m2 l6 offset-l3" key={key}>
-                                                <div class="card-panel #eceff1 blue-grey lighten-5 z-depth-1" style={{ borderWidth: "1px", borderColor: "black", borderBlockStyle: "double" }}>
-                                                    <div class="row valign-wrapper">
-                                                        <div class="col s10">
-                                                            <span class="black-text">
-                                                                {req.title}
-                                                            </span>
-                                                        </div>
+                        <div class="row z-depth-3" key={key1} >
+                            <table class="highlight responsive-table centered" style={{ padding: "3rem", marginLeft: "2rem" }}>
+                                <thead>
+                                    <tr>
+                                        <th>Project</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Money</th>
+                                        <th>Voters</th>
+                                        <th>Granted</th>
+                                    </tr>
+                                </thead>
+                                {
+                                    pro.reqs.map((newReq, key2) => (
+                                        !newReq.granted ? (
+                                            <tbody>
+                                                <tr>
+                                                    <td style={{
+                                                        overflow: "hidden",
+                                                        maxWidth: "10ch",
+                                                        textOverflow: "ellipsis",
+                                                        whiteSpace: "nowrap"
+                                                    }}>{pro.pro.proname} </td>
+                                                    <td style={{
+                                                        overflow: "hidden",
+                                                        maxWidth: "10ch",
+                                                        textOverflow: "ellipsis",
+                                                        whiteSpace: "nowrap"
+                                                    }}>{newReq.title} </td>
+                                                    <td style={{
+                                                        overflow: "hidden",
+                                                        maxWidth: "10ch",
+                                                        textOverflow: "ellipsis",
+                                                        whiteSpace: "nowrap"
+                                                    }}>{newReq.desc}</td>
+                                                    <td>{web3.utils.fromWei(newReq.money, "ether")}</td>
+                                                    <td>{newReq.voters}</td>
+                                                    <td>
                                                         <button
                                                             style={{
                                                                 width: "150px",
@@ -164,20 +182,23 @@ class Vote extends Component {
                                                             onClick={(e) => this.onSubmit(dept.dept.deptid, (key1 + 1), (key2 + 1), e)}
                                                             className="btn btn-small waves-effect waves-light hoverable blue accent-3"
                                                         >
-                                                            Vote
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>)
-                                        : ""
-                                ))
-                            }
+                                                            Vote                                            </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                        )
+
+                                            : ""
+                                    ))
+                                }
+                            </table>
                         </div>
-                    ))
+                    )
+                    )
                 }
             </div>
-        ));
+        ))
 
         return (
             <div class="row">
@@ -194,13 +215,11 @@ class Vote extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col s12 center-align">
-                        {votelist ? votesits : ""}
-                    </div>
+                    {votesits.length !== 0 ? votesits : (<h5>No Requests Created Yet!</h5>)}
                 </div>
                 <ToastContainer
                     position="top-right"
-                    autoClose={5000}
+                    autoClose={2000}
                     hideProgressBar={false}
                     newestOnTop={false}
                     closeOnClick

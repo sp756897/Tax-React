@@ -1,5 +1,12 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const Moralis = require('moralis');
+const serverUrl = "https://elddabsw3kbf.usemoralis.com:2053/server";
+const appId = "GtS9MzGzz8Vq7PkM80BBI52svjTJAnzInRogj1JN";
+Moralis.start({ serverUrl, appId });
 
 class Login extends Component {
     constructor(props) {
@@ -26,18 +33,52 @@ class Login extends Component {
         e.preventDefault();
         const { accounts, contract } = this.state;
 
-        const res = await contract.methods.getPayer(accounts[0]).call();
+        try {
+            const user = await Moralis.authenticate({ signingMessage: "Authenticating Your Account" })
+                .then(function (user) {
+                    console.log("logged in user:", user);
+                    console.log(user.get("ethAddress"));
 
-        console.log(res)
+                })
+                .catch(function (error) {
+                    console(error);
+                });
 
-        if (res.id != 0) {
-            console.log("Signed On")
-            this.props.func(res)
-            localStorage.setItem("userData", JSON.stringify(res));
-            this.props.history.push("/dashboard", res);
+            const res = await contract.methods.getPayer(accounts[0]).call();
+
+            console.log(res)
+
+            if (res.id != 0) {
+                console.log("Signed On")
+                this.props.func(res)
+                localStorage.setItem("userData", JSON.stringify(res));
+                this.props.history.push("/dashboard", res);
+
+
+            }
+            else {
+                console.log("Please Sign Up")
+                toast.error('Please Sign Up!', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         }
-        else {
-            console.log("Please Sign Up")
+        catch {
+            toast.error('Authentication Not Possible!', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
     };
     render() {
@@ -59,27 +100,7 @@ class Login extends Component {
                             </p>
                         </div>
                         <form noValidate onSubmit={this.onSubmit}>
-                            <div className="input-field col s12">
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.email}
-                                    error={errors.email}
-                                    id="email"
-                                    type="email"
-                                />
-                                <label htmlFor="email">Email</label>
-                            </div>
-                            <div className="input-field col s12">
-                                <input
-                                    onChange={this.onChange}
-                                    value={this.state.password}
-                                    error={errors.password}
-                                    id="password"
-                                    type="password"
-                                />
-                                <label htmlFor="password">Password</label>
-                            </div>
-                            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+                            <div className="col s12" style={{ paddingLeft: "11.250px", paddingTop: "2rem" }}>
                                 <button
                                     style={{
                                         width: "150px",
@@ -96,6 +117,19 @@ class Login extends Component {
                         </form>
                     </div>
                 </div>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+                {/* Same as */}
+                <ToastContainer />
             </div>
         );
     }
